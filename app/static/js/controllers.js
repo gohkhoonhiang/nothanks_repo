@@ -1,0 +1,158 @@
+nothanksApp.controller('PlayerController', ['$scope','$location','$http','$interval',
+  function($scope, $location, $http, $interval) {
+    $scope.createPlayer = function() {
+      $http.post('/nothanks/api/v1.0/app/players/create/', {'player_name':$scope.player_name}).
+        success(function(data, status, headers, config) {
+          var result = data['result'];
+          var code = data['code'];
+          var message = data['message'];
+          var output = data['output'];
+          if (result == 'fail') {
+            $scope.message = message;
+          } else {
+            return $location.path('/rooms');
+          }
+        });
+    };
+}]);
+
+nothanksApp.controller('RoomController', ['$scope','$location','$http','$interval',
+  function($scope, $location, $http, $interval) {
+
+    var show_rooms = function() {
+      $http.get('/nothanks/api/v1.0/app/rooms/').
+        success(function(data, status, headers, config) {
+          var result = data['result'];
+          var code = data['code'];
+          var message = data['message'];
+          var output = data['output'];
+          $scope.rooms = output;
+        });
+      $http.get('/nothanks/api/v1.0/app/players/current/').
+        success(function(data, status, headers, config) {
+          var result = data['result'];
+          var code = data['code'];
+          var message = data['message'];
+          var output = data['output'];
+          $scope.current_player = output['name'];
+        });
+    };
+
+    $interval(show_rooms, 1000);
+    
+    $scope.createRoom = function() {
+      $http.post('/nothanks/api/v1.0/app/rooms/create/', {'room_name':$scope.room_name}).
+        success(function(data, status, headers, config) {
+          var result = data['result'];
+          var code = data['code'];
+          var message = data['message'];
+          var output = data['output'];
+          $scope.room_id = output['id'];
+          $scope.room_name = '';
+          show_rooms();
+        });
+    };
+
+    $scope.joinRoom = function(room_id) {
+      $http.post('/nothanks/api/v1.0/app/p/join/', {'room_id':room_id}).
+        success(function(data, status, headers, config) {
+          var result = data['result'];
+          var code = data['code'];
+          var message = data['message'];
+          var output = data['output'];
+          if (result == 'fail') {
+            $scope.message = message;
+          } else {
+            return $location.path('/game');
+          }
+        });
+    };
+
+    $scope.leaveLobby = function() {
+      $http.delete('/nothanks/api/v1.0/app/players/remove/').
+        success(function(data, status, headers, config) {
+          var result = data['result'];
+          var code = data['code'];
+          var message = data['message'];
+          var output = data['output'];
+          if (result == 'fail') {
+            $scope.message = message;
+          } else {
+            return $location.path('/');
+          }
+        });
+    };
+}]);
+
+nothanksApp.controller('GameController', ['$scope','$location','$http','$interval',
+  function($scope, $location, $http, $interval) {
+  
+    var show_room = function() {
+      $http.get('/nothanks/api/v1.0/app/rooms/current/').
+        success(function(data, status, headers, config) {
+          var result = data['result'];
+          var code = data['code'];
+          var message = data['message'];
+          var output = data['output'];
+          $scope.room = output;
+          $scope.game_players = output['players'];
+          $scope.top_card = output['top_card'];
+          $scope.current_chips = output['current_chips'];
+          $scope.cards = output['cards'].length;
+        });
+	  $http.get('/nothanks/api/v1.0/app/p/nextplayer/').
+		success(function(data, status, headers, config) {
+		  var result = data['result'];
+		  var code = data['code'];
+		  var message = data['message'];
+		  var output = data['output'];
+		  $scope.next_player = output['name'];
+		});
+      $http.get('/nothanks/api/v1.0/app/players/current/').
+        success(function(data, status, headers, config) {
+          var result = data['result'];
+          var code = data['code'];
+          var message = data['message'];
+          var output = data['output'];
+          $scope.current_player = output['name'];
+        });
+    };
+
+    $interval(show_room, 1000);
+
+    $scope.startGame = function() {
+      $http.post('/nothanks/api/v1.0/app/p/start/').
+        success(function(data, status, headers, config) {
+          var result = data['result'];
+          var code = data['code'];
+          var message = data['message'];
+          var output = data['output'];
+        });
+    };
+
+    $scope.leaveRoom = function() {
+      $http.post('/nothanks/api/v1.0/app/p/leave/').
+        success(function(data, status, headers, config) {
+          var result = data['result'];
+          var code = data['code'];
+          var message = data['message'];
+          var output = data['output'];
+          if (result == 'fail') {
+            $scope.message = message;
+          } else {
+            return $location.path('/rooms');
+          }
+        });
+    };
+
+    $scope.drawCard = function() {
+      $http.post('/nothanks/api/v1.0/app/p/draw/').
+        success(function(data, status, headers, config) {
+          var result = data['result'];
+          var code = data['code'];
+          var message = data['message'];
+          var output = data['output'];
+        });
+    };
+}]);
+

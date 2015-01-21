@@ -1,0 +1,27 @@
+from flask import Flask
+from views import *
+
+SECRET_KEY = '\xa3\\\xd9\xaa\xdf\xe3\xe2\xe7\xc8c\x895Q\xddd\x98'
+nothanksapp = Flask(__name__)
+nothanksapp.config.from_object(__name__)
+nothanksapp.add_url_rule('/', view_func=index, methods=['GET'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/players/create/', view_func=create_player, methods=['POST'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/players/remove/', view_func=remove_player, methods=['DELETE'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/players/', view_func=get_players, methods=['GET'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/players/current/', view_func=current_player, methods=['GET'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/rooms/create/', view_func=create_room, methods=['POST'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/rooms/remove/', view_func=remove_room, methods=['DELETE'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/rooms/', view_func=get_rooms, methods=['GET'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/rooms/current/', view_func=current_room, methods=['GET'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/rooms/players/', view_func=get_players_in_room_by_room_id, methods=['GET'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/p/join/', view_func=player_join_room, methods=['POST'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/p/leave/', view_func=player_leave_room, methods=['POST'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/p/start/', view_func=start_game, methods=['POST'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/p/players/', view_func=get_players_in_room, methods=['GET'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/p/draw/', view_func=draw_card, methods=['POST'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/p/placechip/', view_func=place_chip, methods=['POST'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/p/takecard/', view_func=take_card, methods=['POST'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/p/end/', view_func=end_game, methods=['POST'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/p/nextcard/', view_func=has_next_card, methods=['POST'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/p/nextplayer/', view_func=get_next_player_in_room, methods=['GET'])
+nothanksapp.add_url_rule('/nothanks/api/v1.0/app/p/gameresult/', view_func=get_game_result, methods=['GET'])

@@ -1,0 +1,35 @@
+<div ng-controller="GameController">
+  <div ng-show="message" class="alert alert-info">
+    <p ng-model="message">{{ message }}</p>
+  </div>
+  <h2>Hello <span ng-model="current_player">{{ current_player }}</span>, you are in room <span ng-model="room">{{ room['name'] }}</span></h2>
+  <div class="panel panel-default">
+    <div class="panel-heading">Current players:</div>
+    <div class="panel-body">
+      <table class="table table-striped">
+        <tr ng-repeat="player in game_players">
+          <td>{{ player['id'] }}</td>
+          <td>{{ player['name'] }}</td>
+          <td>{{ player['chips'] }}</td>
+          <td>{{ player['cards'] }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">Game State - {{ room['state'] }}</div>
+    <div clsas="panel-body">
+      <table class="table">
+        <tr>
+          <td>Remaining cards: {{ cards }}</td> 
+          <td>Next player: {{ next_player }}</td>
+          <td>Top Card: {{ top_card }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary" ng-if="current_player == next_player" ng-click="drawCard()">Draw Card</button>
+  <hr>
+  <button type="submit" class="btn btn-primary" ng-click="startGame()">Start Game</button>
+  <button type="submit" class="btn btn-danger" ng-click="leaveRoom()">Leave Room</button>
+</div>
