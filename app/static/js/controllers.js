@@ -1,23 +1,27 @@
-nothanksApp.controller('PlayerController', ['$scope','$location','$http','$interval',
-  function($scope, $location, $http, $interval) {
+nothanksApp.controller('PlayerController', ['$rootScope','$scope','$location','$http','$interval',
+  function($rootScope, $scope, $location, $http, $interval) {
     $scope.createPlayer = function() {
+      $scope.message = '';
       $http.post('/nothanks/api/v1.0/app/players/create/', {'player_name':$scope.player_name}).
         success(function(data, status, headers, config) {
           var result = data['result'];
           var code = data['code'];
           var message = data['message'];
           var output = data['output'];
-          if (result == 'fail') {
-            $scope.message = message;
-          } else {
-            return $location.path('/rooms');
-          }
+          return $location.path('/rooms');
+        }).
+        error(function(data, status, headers, config) {
+          var result = data['result'];
+          var code = data['code'];
+          var message = data['message'];
+          var output = data['output'];
+          $scope.message = message;
         });
     };
 }]);
 
-nothanksApp.controller('RoomController', ['$scope','$location','$http','$interval',
-  function($scope, $location, $http, $interval) {
+nothanksApp.controller('RoomController', ['$rootScope','$scope','$location','$http','$interval',
+  function($rootScope, $scope, $location, $http, $interval) {
 
     var show_rooms = function() {
       $http.get('/nothanks/api/v1.0/app/rooms/').
@@ -41,6 +45,7 @@ nothanksApp.controller('RoomController', ['$scope','$location','$http','$interva
     $interval(show_rooms, 1000);
     
     $scope.createRoom = function() {
+      $scope.message = '';
       $http.post('/nothanks/api/v1.0/app/rooms/create/', {'room_name':$scope.room_name}).
         success(function(data, status, headers, config) {
           var result = data['result'];
@@ -49,6 +54,16 @@ nothanksApp.controller('RoomController', ['$scope','$location','$http','$interva
           var output = data['output'];
           $scope.room_id = output['id'];
           $scope.room_name = '';
+          show_rooms();
+        }).
+        error(function(data, status, headers, config) {
+          var result = data['result'];
+          var code = data['code'];
+          var message = data['message'];
+          var output = data['output'];
+          $scope.room_id = output['id'];
+          $scope.room_name = '';
+          $scope.message = message;
           show_rooms();
         });
     };
@@ -61,7 +76,7 @@ nothanksApp.controller('RoomController', ['$scope','$location','$http','$interva
           var message = data['message'];
           var output = data['output'];
           if (result == 'fail') {
-            $scope.message = message;
+            $rootScope.message = message;
           } else {
             return $location.path('/game');
           }
@@ -76,7 +91,7 @@ nothanksApp.controller('RoomController', ['$scope','$location','$http','$interva
           var message = data['message'];
           var output = data['output'];
           if (result == 'fail') {
-            $scope.message = message;
+            $rootScope.message = message;
           } else {
             return $location.path('/');
           }
@@ -84,8 +99,33 @@ nothanksApp.controller('RoomController', ['$scope','$location','$http','$interva
     };
 }]);
 
-nothanksApp.controller('GameController', ['$scope','$location','$http','$interval',
-  function($scope, $location, $http, $interval) {
+nothanksApp.controller('GameController', ['$rootScope','$scope','$location','$http','$interval',
+  function($rootScope, $scope, $location, $http, $interval) {
+  
+    var game_state = function(state) {
+      var message = '';
+      switch(state) {
+        case 'waiting_player':
+          message = 'Waiting for players...';
+          break;
+        case 'ready_to_start':
+          message = 'Ready to start game...';
+          break;
+        case 'draw_card':
+          message = 'Next player to draw card...';
+          break;
+        case 'take_or_pay':
+          message = 'Take the card or pay a chip...';
+          break;
+        case 'calculate_points':
+          message = 'Calculating points...';
+          break;
+        default:
+          message = 'Unknown state...';
+          break;
+      }
+      return message;
+    }
   
     var show_room = function() {
       $http.get('/nothanks/api/v1.0/app/rooms/current/').
@@ -99,6 +139,7 @@ nothanksApp.controller('GameController', ['$scope','$location','$http','$interva
           $scope.top_card = output['top_card'];
           $scope.current_chips = output['current_chips'];
           $scope.cards = output['cards'].length;
+          $scope.game_state = game_state(output['state']);
         });
 	  $http.get('/nothanks/api/v1.0/app/p/nextplayer/').
 		success(function(data, status, headers, config) {
@@ -138,7 +179,7 @@ nothanksApp.controller('GameController', ['$scope','$location','$http','$interva
           var message = data['message'];
           var output = data['output'];
           if (result == 'fail') {
-            $scope.message = message;
+            $rootScope.message = message;
           } else {
             return $location.path('/rooms');
           }

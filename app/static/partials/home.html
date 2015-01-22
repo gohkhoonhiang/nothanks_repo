@@ -1,7 +1,5 @@
 <div ng-controller="PlayerController">
-  <div ng-show="message" class="alert alert-info">
-    <p ng-model="message"></p>
-  </div>
+  <div class="alert alert-info" ng-if="message"><span>{{ message }}</span></div>
   <form class="form-inline">
     <div class="form-group">
       <label for="playerName">Choose your name:</label> <input type="text" class="form-control" id="playerName" placeholder="name" ng-model="player_name">

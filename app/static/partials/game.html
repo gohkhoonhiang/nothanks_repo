@@ -1,7 +1,5 @@
 <div ng-controller="GameController">
-  <div ng-show="message" class="alert alert-info">
-    <p ng-model="message">{{ message }}</p>
-  </div>
+  <div class="alert alert-info" ng-if="message"><span>{{ message }}</span></div>
   <h2>Hello <span ng-model="current_player">{{ current_player }}</span>, you are in room <span ng-model="room">{{ room['name'] }}</span></h2>
   <div class="panel panel-default">
     <div class="panel-heading">Current players:</div>
@@ -17,7 +15,7 @@
     </div>
   </div>
   <div class="panel panel-default">
-    <div class="panel-heading">Game State - {{ room['state'] }}</div>
+    <div class="panel-heading">Game State - <span ng-model="game_state">{{ game_state }}</span></div>
     <div clsas="panel-body">
       <table class="table">
         <tr>
@@ -28,7 +26,8 @@
       </table>
     </div>
   </div>
-  <button type="submit" class="btn btn-primary" ng-if="current_player == next_player" ng-click="drawCard()">Draw Card</button>
+  <button type="submit" class="btn btn-primary" ng-show="room['state'] == 'draw_card'" ng-if="current_player == next_player" ng-click="drawCard()">Draw Card</button>
+  <button type="submit" class="btn btn-success" ng-show="room['state'] == 'take_or_pay'" ng-if="current_player == next_player" ng-click="takeCard()">Take Card</button>
   <hr>
   <button type="submit" class="btn btn-primary" ng-click="startGame()">Start Game</button>
   <button type="submit" class="btn btn-danger" ng-click="leaveRoom()">Leave Room</button>

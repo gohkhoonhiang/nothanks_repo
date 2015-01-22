@@ -4,6 +4,13 @@ from random import shuffle
 class NoThanksApp(object):
 
     '''
+    game_state = [
+        waiting_player,
+        ready_to_start,
+        draw_card,
+        take_or_pay,
+        calculate_points
+    ]
     nothanksapp = {
 		'roomid' : {
 			'id' : '',
@@ -259,7 +266,7 @@ class NoThanksApp(object):
         cards = [x for x in range(3,36)]
         shuffle(cards)
         room['cards'] = cards
-        room['state'] = 'in_game'
+        room['state'] = 'draw_card'
         return room
 
     def end_game(self, room_id):
@@ -274,6 +281,7 @@ class NoThanksApp(object):
             return False
         room = self.get_room_by_id(room_id)
         if len(room['cards']) == 0:
+            room['state'] = 'calculate_points'
             return False
         return True
 
@@ -284,6 +292,7 @@ class NoThanksApp(object):
         if self.check_has_next_card(room_id):
             top_card = room['cards'].pop()
             room['top_card'] = top_card
+            room['state'] = 'take_or_pay';
             return room
         return None
     
@@ -302,6 +311,7 @@ class NoThanksApp(object):
         player['cards'].sort()
         player['chips'] += current_chips
         room['current_chips'] = 0
+        room['state'] = 'draw_card'
         return room
 
     def place_chip(self, room_id, player_id):
