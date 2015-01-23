@@ -22,12 +22,14 @@
           <td>Remaining cards: {{ cards }}</td> 
           <td>Next player: {{ next_player }}</td>
           <td>Top Card: {{ top_card }}</td>
+          <td>Current Chips: {{ current_chips }}</td>
         </tr>
       </table>
     </div>
   </div>
   <button type="submit" class="btn btn-primary" ng-show="room['state'] == 'draw_card'" ng-if="current_player == next_player" ng-click="drawCard()">Draw Card</button>
   <button type="submit" class="btn btn-success" ng-show="room['state'] == 'take_or_pay'" ng-if="current_player == next_player" ng-click="takeCard()">Take Card</button>
+  <button type="submit" class="btn btn-success" ng-show="room['state'] == 'take_or_pay'" ng-if="current_player == next_player" ng-click="placeChip()">Place Chip</button>
   <hr>
   <button type="submit" class="btn btn-primary" ng-click="startGame()">Start Game</button>
   <button type="submit" class="btn btn-danger" ng-click="leaveRoom()">Leave Room</button>

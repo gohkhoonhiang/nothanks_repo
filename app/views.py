@@ -320,11 +320,37 @@ def get_next_player_in_room():
     
 
 def place_chip():
-    pass
+    room_id = session.get('room_id')
+    if not room_id:
+        print "[DEBUG] /nothanks/api/v1.0/app/p/placechip/ - room %s not in session" % room_id
+        return return_object('fail',0,'room not in session',{},404)
+    player_id = session.get('player_id')
+    if not player_id:
+        print "[DEBUG] /nothanks/api/v1.0/app/p/placechip/ - player %s not in session" % player_id
+        return return_object('fail',1,'player not in session',{},404)
+    room = nothanksapp.place_chip(room_id, player_id)
+    if not room:
+        print "[DEBUG] /nothanks/api/v1.0/app/p/placechip/ - unable to place chip"
+        return return_object('fail',2,'unable to place chips',{},400)
+    print "[DEBUG] /nothanks/api/v1.0/app/p/placechip/ - player %s places a chip" % player_id
+    return return_object('success',3,'player places chip',room,200)
 
 
 def take_card():
-    pass
+    room_id = session.get('room_id')
+    if not room_id:
+        print "[DEBUG] /nothanks/api/v1.0/app/p/takecard/ - room %s not in session" % room_id
+        return return_object('fail',0,'room not in session',{},404)
+    player_id = session.get('player_id')
+    if not player_id:
+        print "[DEBUG] /nothanks/api/v1.0/app/p/takecard/ - player %s not in session" % player_id
+        return return_object('fail',1,'player not in session',{},404)
+    room = nothanksapp.take_card(room_id, player_id)
+    if not room:
+        print "[DEBUG] /nothanks/api/v1.0/app/p/takecard/ - unable to take card"
+        return return_object('fail',2,'unable to take card',{},400)
+    print "[DEBUG] /nothanks/api/v1.0/app/p/takecard/ - player %s takes card %s" % (player_id, room['topcard']) 
+    return return_object('success',3,'card is taken',room,200)
     
 
 def end_game():
@@ -338,6 +364,17 @@ def has_next_card():
 def get_game_result():
     pass
     
+#####
+# decorator functions
+#####
+def check_room_in_session(func):
+    def func_wrapper(*args, **kwargs):
+        room_id = session.get('room_id')
+        if not room_id:
+            return return_object('fail',0,'room not in session',{},404)
+        return func(*args, **kwargs)
+    return func_wrapper
+
 
 #####
 # format return json object

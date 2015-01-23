@@ -200,7 +200,7 @@ class NoThanksApp(object):
         return room['players']
 
     def get_player_in_room_by_id(self, room_id, player_id):
-        if not check_player_exists_in_room_by_id(room_id, player_id):
+        if not self.check_player_exists_in_room_by_id(room_id, player_id):
             return None
         room = self.get_room_by_id(room_id)
         return room['players'].get(player_id)
@@ -217,14 +217,16 @@ class NoThanksApp(object):
         player_index = room['next_player']
         return room['players'].get(players[player_index])
 
-    def set_next_player_in_room(self, room_id, next_player_index):
+    def set_next_player_in_room(self, room_id):
         if not self.check_room_exists_by_id(room_id):
             return False
         room = self.get_room_by_id(room_id)
-        next_player_index += 1
+        next_player_index = room['next_player'] + 1
+        print "next_player_index %s" % next_player_index
         if next_player_index == len(room['players']):
             next_player_index = 0
         room['next_player'] = next_player_index
+        print "room['next_player'] %s" % room['next_player']
 
     def check_player_exists_in_room_by_id(self, room_id, player_id):
         if not self.check_room_exists_by_id(room_id):
@@ -281,7 +283,6 @@ class NoThanksApp(object):
             return False
         room = self.get_room_by_id(room_id)
         if len(room['cards']) == 0:
-            room['state'] = 'calculate_points'
             return False
         return True
 
@@ -294,6 +295,7 @@ class NoThanksApp(object):
             room['top_card'] = top_card
             room['state'] = 'take_or_pay';
             return room
+        room['state'] = 'calculate_points'
         return None
     
     def take_card(self, room_id, player_id):
@@ -312,6 +314,7 @@ class NoThanksApp(object):
         player['chips'] += current_chips
         room['current_chips'] = 0
         room['state'] = 'draw_card'
+        self.set_next_player_in_room(room_id)
         return room
 
     def place_chip(self, room_id, player_id):
@@ -325,6 +328,7 @@ class NoThanksApp(object):
         player = self.get_player_in_room_by_id(room_id, player_id)
         player['chips'] -= 1
         room['current_chips'] += 1
+        self.set_next_player_in_room(room_id)
         return room
         
     def get_game_result(self, room_id):

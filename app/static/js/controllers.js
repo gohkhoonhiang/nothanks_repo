@@ -195,5 +195,26 @@ nothanksApp.controller('GameController', ['$rootScope','$scope','$location','$ht
           var output = data['output'];
         });
     };
+
+    $scope.takeCard = function() {
+      $http.post('/nothanks/api/v1.0/app/p/takecard/').
+        success(function(data, status, headers, config) {
+          var result = data['result'];
+          var code = data['code'];
+          var message = data['message'];
+          var output = data['output'];
+          $scope.top_card = '';
+        });
+    };
+
+    $scope.placeChip = function() {
+      $http.post('/nothanks/api/v1.0/app/p/placechip/').
+        success(function(data, status, headers, config) {
+          var result = data['result'];
+          var code = data['code'];
+          var message = data['message'];
+          var output = data['output'];
+        });
+    };
 }]);
 
