@@ -23,5 +23,5 @@
 
 ### Who do I talk to? ###
 
-* @gohkhoonhiang , gohkhoonhiang@gmail.com
-* @ZwodahS 
+* @gohkhoonhiang
+* @ZwodahS
