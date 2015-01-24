@@ -118,7 +118,7 @@ class NoThanksApp(object):
         room['top_card'] = 0
         room['current_chips'] = 0
         room['state'] = 'waiting_player'
-        room['current_winner'] = {'point' : 0, 'player' : ''}
+        room['current_winner'] = {'point' : 0, 'player' : {}}
         return room
     
     # operations concerning players
@@ -212,10 +212,10 @@ class NoThanksApp(object):
         room_players = room['players']
         if not room_players:
             return None
-        players = [p for p in room_players.keys()]
+        players = [int(p) for p in room_players.keys()]
         players.sort()
         player_index = room['next_player']
-        return room['players'].get(players[player_index])
+        return room['players'].get(str(players[player_index]))
 
     def set_next_player_in_room(self, room_id):
         if not self.check_room_exists_by_id(room_id):
@@ -267,8 +267,7 @@ class NoThanksApp(object):
 			player['chips'] = 11
         cards = [x for x in range(3,36)]
         shuffle(cards)
-        room['cards'] = cards[9:]
-        print "room cards length %s" % len(room['cards'])
+        room['cards'] = cards[:9]
         room['state'] = 'draw_card'
         return room
 
@@ -314,8 +313,11 @@ class NoThanksApp(object):
         player['cards'].sort()
         player['chips'] += current_chips
         room['current_chips'] = 0
-        room['state'] = 'draw_card'
-        self.set_next_player_in_room(room_id)
+        if self.check_has_next_card(room_id):
+            room['state'] = 'draw_card'
+            self.set_next_player_in_room(room_id)
+        else:
+            room['state'] = 'calculate_points'
         return room
 
     def place_chip(self, room_id, player_id):
@@ -335,20 +337,25 @@ class NoThanksApp(object):
     def get_game_result(self, room_id):
         if not self.check_room_exists_by_id(room_id):
             return None
-        if not self.check_player_exists_by_id(player_id):
-            return None
-        if not self.check_player_exists_in_room_by_id(room_id, player_id):
-            return None
         room = self.get_room_by_id(room_id)
         for p in room['players'].values():
             chips = p['chips']
             cards = p['cards']
             points = chips + self.calculate_card_points(cards)
             p['points'] = points
-            if points > current_winner['point']:
+            if points > room['current_winner']['point']:
                 room['current_winner']['point'] = points
-                room['current_winner']['player'] = p['id']
+                room['current_winner']['player'] = p
         return room
+        
+    def calculate_card_points(self, cards):
+        current_card = -1
+        current_points = 0
+        for c in cards:
+            if c > current_card + 1:
+                current_points += c
+            current_card = c    
+        return current_points
     
     # helper functions
 

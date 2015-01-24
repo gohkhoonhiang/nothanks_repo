@@ -349,7 +349,7 @@ def take_card():
     if not room:
         print "[DEBUG] /nothanks/api/v1.0/app/p/takecard/ - unable to take card"
         return return_object('fail',2,'unable to take card',{},400)
-    print "[DEBUG] /nothanks/api/v1.0/app/p/takecard/ - player %s takes card %s" % (player_id, room['topcard']) 
+    print "[DEBUG] /nothanks/api/v1.0/app/p/takecard/ - player %s takes card %s" % (player_id, room['top_card']) 
     return return_object('success',3,'card is taken',room,200)
     
 
@@ -362,7 +362,17 @@ def has_next_card():
 
 
 def get_game_result():
-    pass
+    room_id = session.get('room_id')
+    if not room_id:
+        print "[DEBUG] /nothanks/api/v1.0/app/p/gameresult/ - room %s not in session" % room_id
+        return return_object('fail',0,'room not in session',{},404)
+    room = nothanksapp.get_game_result(room_id)
+    if not room:
+        print "[DEBUG] /nothanks/api/v1.0/app/p/gameresult/ - unable to take card"
+        return return_object('fail',1,'unable to calculate result',{},400)
+    print "[DEBUG] /nothanks/api/v1.0/app/p/gameresult/ - room %s result: winner is %s" % (room_id, room['current_winner']) 
+    return return_object('success',2,'results out',room,200)
+    
     
 #####
 # decorator functions

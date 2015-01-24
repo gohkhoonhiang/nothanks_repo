@@ -10,6 +10,7 @@
           <td>{{ player['name'] }}</td>
           <td>{{ player['chips'] }}</td>
           <td>{{ player['cards'] }}</td>
+          <td ng-show="room['state'] == 'calculate_points'">{{ player['points'] }}</td>
         </tr>
       </table>
     </div>
@@ -24,13 +25,17 @@
           <td>Top Card: {{ top_card }}</td>
           <td>Current Chips: {{ current_chips }}</td>
         </tr>
+        <tr ng-show="room['state'] == 'calculate_points'">
+          <td colspan="4">Winner is player {{ winner['player']['name'] }} with {{ winner['point'] }} points</td>
+        </tr>
       </table>
     </div>
   </div>
   <button type="submit" class="btn btn-primary" ng-show="room['state'] == 'draw_card'" ng-if="current_player == next_player" ng-click="drawCard()">Draw Card</button>
   <button type="submit" class="btn btn-success" ng-show="room['state'] == 'take_or_pay'" ng-if="current_player == next_player" ng-click="takeCard()">Take Card</button>
-  <button type="submit" class="btn btn-success" ng-show="room['state'] == 'take_or_pay'" ng-if="current_player == next_player" ng-click="placeChip()">Place Chip</button>
+  <button type="submit" class="btn btn-success" ng-show="room['state'] == 'take_or_pay' && current_player_chips > 0" ng-if="current_player == next_player" ng-click="placeChip()">Place Chip</button>
   <hr>
-  <button type="submit" class="btn btn-primary" ng-click="startGame()">Start Game</button>
+  <button type="submit" class="btn btn-primary" ng-show="room['state'] == 'ready_to_start'" ng-click="startGame()">Start Game</button>
+  <button type="submit" class="btn btn-primary" ng-show="room['state'] == 'calculate_points'" ng-click="calculatePoints()">Calculate Points</button>
   <button type="submit" class="btn btn-danger" ng-click="leaveRoom()">Leave Room</button>
 </div>

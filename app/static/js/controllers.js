@@ -42,7 +42,7 @@ nothanksApp.controller('RoomController', ['$rootScope','$scope','$location','$ht
         });
     };
 
-    $interval(show_rooms, 1000);
+    $interval(show_rooms, 500);
     
     $scope.createRoom = function() {
       $scope.message = '';
@@ -156,10 +156,11 @@ nothanksApp.controller('GameController', ['$rootScope','$scope','$location','$ht
           var message = data['message'];
           var output = data['output'];
           $scope.current_player = output['name'];
+          $scope.current_player_chips = output['chips'];
         });
     };
 
-    $interval(show_room, 1000);
+    $interval(show_room, 500);
 
     $scope.startGame = function() {
       $http.post('/nothanks/api/v1.0/app/p/start/').
@@ -214,6 +215,17 @@ nothanksApp.controller('GameController', ['$rootScope','$scope','$location','$ht
           var code = data['code'];
           var message = data['message'];
           var output = data['output'];
+        });
+    };
+
+    $scope.calculatePoints = function() {
+      $http.get('/nothanks/api/v1.0/app/p/gameresult/').
+        success(function(data, status, headers, config) {
+          var result = data['result'];
+          var code = data['code'];
+          var message = data['message'];
+          var output = data['output'];
+          $scope.winner = output['current_winner'];
         });
     };
 }]);
