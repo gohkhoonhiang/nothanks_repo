@@ -267,7 +267,8 @@ class NoThanksApp(object):
 			player['chips'] = 11
         cards = [x for x in range(3,36)]
         shuffle(cards)
-        room['cards'] = cards
+        room['cards'] = cards[9:]
+        print "room cards length %s" % len(room['cards'])
         room['state'] = 'draw_card'
         return room
 
