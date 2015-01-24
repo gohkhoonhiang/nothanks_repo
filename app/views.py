@@ -300,25 +300,17 @@ def draw_card():
         return return_object('fail',2,'unable to draw card',{},400)
     print "[DEBUG] /nothanks/api/v1.0/app/p/draw/ - top card is %s in room %s" % (room['top_card'], room_id)
     return return_object('success',3,'card is drawn',room,200)
-
-
-def get_next_player_in_room():
-    room_id = session.get('room_id')
-    if not room_id:
-        print "[DEBUG] /nothanks/api/v1.0/app/p/nextplayer/ - room %s not in session" % room_id
-        return return_object('fail',0,'room not in session',{},404)
-    room = nothanksapp.get_room_by_id(room_id)
-    if not room:
-        print "[DEBUG] /nothanks/api/v1.0/app/p/nextplayer/ - room %s does not exist" % room_id
-        return return_object('fail',1,'room not exists',{},404)
-    next_player = nothanksapp.get_next_player_in_room(room_id)
-    if not next_player:
-        print "[DEBUG] /nothanks/api/v1.0/app/p/nextplayer/ - unable to find next player in room %s" % room_id
-        return return_object('fail',2,'unable to find next player',{},400)
-    print "[DEBUG] /nothanks/api/v1.0/app/p/nextplayer/ - next player found %s in room %s" % (next_player, room_id)
-    return return_object('success',3,'next player found',next_player,200)
     
 
+#####
+# place chip (by session)
+#
+# status code:
+# 'fail',0,'room not in session',404
+# 'fail',1,'player not in session',404
+# 'fail',2,'unable to place chips',400
+# 'success',3,'player places chips',200
+#####
 def place_chip():
     room_id = session.get('room_id')
     if not room_id:
@@ -336,6 +328,15 @@ def place_chip():
     return return_object('success',3,'player places chip',room,200)
 
 
+#####
+# take card (by session)
+#
+# status codes:
+# 'fail',0,'room not in session',404
+# 'fail',1,'player not in session',404
+# 'fail',2,'unable to take card',400
+# 'success',3,'card is taken',200
+#####
 def take_card():
     room_id = session.get('room_id')
     if not room_id:
@@ -351,16 +352,16 @@ def take_card():
         return return_object('fail',2,'unable to take card',{},400)
     print "[DEBUG] /nothanks/api/v1.0/app/p/takecard/ - player %s takes card %s" % (player_id, room['top_card']) 
     return return_object('success',3,'card is taken',room,200)
-    
-
-def end_game():
-    pass
-    
-    
-def has_next_card():
-    pass
 
 
+#####
+# get game result (by session)
+#
+# status codes:
+# 'fail',0,'room not in session',404
+# 'fail',1,'unable to calculate results',400
+# 'success',2,'results out',200
+#####
 def get_game_result():
     room_id = session.get('room_id')
     if not room_id:
@@ -374,6 +375,30 @@ def get_game_result():
     return return_object('success',2,'results out',room,200)
     
     
+def get_next_player_in_room():
+    room_id = session.get('room_id')
+    if not room_id:
+        print "[DEBUG] /nothanks/api/v1.0/app/p/nextplayer/ - room %s not in session" % room_id
+        return return_object('fail',0,'room not in session',{},404)
+    room = nothanksapp.get_room_by_id(room_id)
+    if not room:
+        print "[DEBUG] /nothanks/api/v1.0/app/p/nextplayer/ - room %s does not exist" % room_id
+        return return_object('fail',1,'room not exists',{},404)
+    next_player = nothanksapp.get_next_player_in_room(room_id)
+    if not next_player:
+        print "[DEBUG] /nothanks/api/v1.0/app/p/nextplayer/ - unable to find next player in room %s" % room_id
+        return return_object('fail',2,'unable to find next player',{},400)
+    print "[DEBUG] /nothanks/api/v1.0/app/p/nextplayer/ - next player found %s in room %s" % (next_player, room_id)
+    return return_object('success',3,'next player found',next_player,200)
+    
+
+def end_game():
+    pass
+    
+    
+def has_next_card():
+    pass
+
 #####
 # decorator functions
 #####
