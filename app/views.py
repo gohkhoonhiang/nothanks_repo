@@ -300,7 +300,6 @@ def draw_card():
         return return_object('fail',2,'unable to draw card',{},400)
     print "[DEBUG] /nothanks/api/v1.0/app/p/draw/ - top card is %s in room %s" % (room['top_card'], room_id)
     return return_object('success',3,'card is drawn',room,200)
-    
 
 #####
 # place chip (by session)
@@ -327,7 +326,6 @@ def place_chip():
     print "[DEBUG] /nothanks/api/v1.0/app/p/placechip/ - player %s places a chip" % player_id
     return return_object('success',3,'player places chip',room,200)
 
-
 #####
 # take card (by session)
 #
@@ -352,7 +350,6 @@ def take_card():
         return return_object('fail',2,'unable to take card',{},400)
     print "[DEBUG] /nothanks/api/v1.0/app/p/takecard/ - player %s takes card %s" % (player_id, room['top_card']) 
     return return_object('success',3,'card is taken',room,200)
-
 
 #####
 # get game result (by session)

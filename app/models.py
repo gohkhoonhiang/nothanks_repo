@@ -341,11 +341,15 @@ class NoThanksApp(object):
         for p in room['players'].values():
             chips = p['chips']
             cards = p['cards']
-            points = chips + self.calculate_card_points(cards)
+            points = self.calculate_card_points(cards) - chips
             p['points'] = points
-            if points > room['current_winner']['point']:
+            if not room['current_winner']['player']:
                 room['current_winner']['point'] = points
                 room['current_winner']['player'] = p
+            else:
+                if points < room['current_winner']['point']:
+                    room['current_winner']['point'] = points
+                    room['current_winner']['player'] = p
         return room
         
     def calculate_card_points(self, cards):
