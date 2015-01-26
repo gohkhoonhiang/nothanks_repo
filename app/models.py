@@ -227,6 +227,13 @@ class NoThanksApp(object):
             next_player_index = 0
         room['next_player'] = next_player_index
         print "room['next_player'] %s" % room['next_player']
+        
+    def check_is_next_player_in_room(self, room_id, player_id):
+        if not self.check_room_exists_by_id(room_id):
+            return False
+        room = self.get_room_by_id(room_id)
+        next_player = self.get_next_player_in_room(room_id)
+        return next_player['id'] == player_id
 
     def check_player_exists_in_room_by_id(self, room_id, player_id):
         if not self.check_room_exists_by_id(room_id):

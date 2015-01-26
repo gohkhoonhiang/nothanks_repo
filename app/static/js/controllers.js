@@ -140,15 +140,15 @@ nothanksApp.controller('GameController', ['$rootScope','$scope','$location','$ht
           $scope.current_chips = output['current_chips'];
           $scope.cards = output['cards'].length;
           $scope.game_state = game_state(output['state']);
+          $http.get('/nothanks/api/v1.0/app/p/nextplayer/').
+            success(function(data, status, headers, config) {
+              var result = data['result'];
+              var code = data['code'];
+              var message = data['message'];
+              var output = data['output'];
+              $scope.next_player = output['name'];
+            });
         });
-	  $http.get('/nothanks/api/v1.0/app/p/nextplayer/').
-		success(function(data, status, headers, config) {
-		  var result = data['result'];
-		  var code = data['code'];
-		  var message = data['message'];
-		  var output = data['output'];
-		  $scope.next_player = output['name'];
-		});
       $http.get('/nothanks/api/v1.0/app/players/current/').
         success(function(data, status, headers, config) {
           var result = data['result'];
